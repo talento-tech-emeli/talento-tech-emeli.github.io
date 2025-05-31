@@ -1,18 +1,505 @@
 <!DOCTYPE html>
-<html>
-<body>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PadAI - Controle Financeiro para Padarias</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-amber-800 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-bread-slice text-2xl"></i>
+                    <h1 class="text-2xl font-bold">PadAI</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <i class="fas fa-bell text-xl cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Profile" class="w-8 h-8 rounded-full">
+                        <span class="hidden md:inline">Seu Jorge</span>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-<h2>HTML Forms</h2>
+        <!-- Main Content -->
+        <div class="flex flex-1">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white shadow-md hidden md:block">
+                <nav class="p-4">
+                    <div class="mb-8">
+                        <h2 class="text-lg font-semibold text-gray-700 mb-4">MENU</h2>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="#" class="flex items-center space-x-2 text-amber-700 bg-amber-100 px-4 py-2 rounded-lg">
+                                    <i class="fas fa-home"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center space-x-2 text-gray-600 hover:text-amber-700 px-4 py-2 rounded-lg hover:bg-amber-50">
+                                    <i class="fas fa-receipt"></i>
+                                    <span>Registros</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center space-x-2 text-gray-600 hover:text-amber-700 px-4 py-2 rounded-lg hover:bg-amber-50">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <span>Relatórios</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center space-x-2 text-gray-600 hover:text-amber-700 px-4 py-2 rounded-lg hover:bg-amber-50">
+                                    <i class="fas fa-boxes"></i>
+                                    <span>Estoque</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center space-x-2 text-gray-600 hover:text-amber-700 px-4 py-2 rounded-lg hover:bg-amber-50">
+                                    <i class="fas fa-users"></i>
+                                    <span>Fornecedores</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-700 mb-4">CONFIGURAÇÕES</h2>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="#" class="flex items-center space-x-2 text-gray-600 hover:text-amber-700 px-4 py-2 rounded-lg hover:bg-amber-50">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Configurações</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center space-x-2 text-gray-600 hover:text-amber-700 px-4 py-2 rounded-lg hover:bg-amber-50">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Sair</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
 
-<form action="teste.html">
-  <label for="fname">Primeiro nome:</label><br>
-  <input type="text" id="fname" name="fname" value="Emeli Talia"><br>
-  <label for="lname">Sobrenome:</label><br>
-  <input type="text" id="lname" name="lname" value="Denck"><br><br>
-  <input type="submit" value="Confirmar">
-</form>
+            <!-- Content Area -->
+            <main class="flex-1 p-6">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Controle Financeiro</h2>
+                    <p class="text-gray-600">Gerencie os gastos e entradas da sua padaria</p>
+                </div>
 
-<p>If you click the "Submit" button, the form-data will be sent to a page called "/action_page.php".</p>
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-gray-500">Saldo Atual</p>
+                                <h3 class="text-2xl font-bold text-green-600">R$ 8.450,00</h3>
+                            </div>
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <i class="fas fa-wallet text-green-600"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">+12% em relação ao mês passado</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-gray-500">Receitas (Mês)</p>
+                                <h3 class="text-2xl font-bold text-blue-600">R$ 15.200,00</h3>
+                            </div>
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <i class="fas fa-arrow-up text-blue-600"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">+8% em relação ao mês passado</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-gray-500">Despesas (Mês)</p>
+                                <h3 class="text-2xl font-bold text-red-600">R$ 6.750,00</h3>
+                            </div>
+                            <div class="bg-red-100 p-3 rounded-full">
+                                <i class="fas fa-arrow-down text-red-600"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">+5% em relação ao mês passado</p>
+                    </div>
+                </div>
 
+                <!-- Main Content Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left Column -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Ações Rápidas</h3>
+                                <button class="text-amber-700 hover:text-amber-800">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <button onclick="openModal('income')" class="bg-green-50 hover:bg-green-100 text-green-700 p-4 rounded-lg flex flex-col items-center transition">
+                                    <i class="fas fa-plus-circle text-2xl mb-2"></i>
+                                    <span>Nova Entrada</span>
+                                </button>
+                                <button onclick="openModal('expense')" class="bg-red-50 hover:bg-red-100 text-red-700 p-4 rounded-lg flex flex-col items-center transition">
+                                    <i class="fas fa-minus-circle text-2xl mb-2"></i>
+                                    <span>Nova Despesa</span>
+                                </button>
+                                <button class="bg-blue-50 hover:bg-blue-100 text-blue-700 p-4 rounded-lg flex flex-col items-center transition">
+                                    <i class="fas fa-file-invoice-dollar text-2xl mb-2"></i>
+                                    <span>Gerar Relatório</span>
+                                </button>
+                                <button class="bg-purple-50 hover:bg-purple-100 text-purple-700 p-4 rounded-lg flex flex-col items-center transition">
+                                    <i class="fas fa-bell text-2xl mb-2"></i>
+                                    <span>Lembretes</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Recent Transactions -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-lg font-semibold text-gray-800">Últimas Transações</h3>
+                                    <button class="text-amber-700 hover:text-amber-800">
+                                        Ver todas <i class="fas fa-chevron-right ml-1"></i>
+                                    </button>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15/06/2023</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Venda de pães</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Vendas</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">R$ 320,00</td>
+                                            </tr>
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">14/06/2023</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Compra de farinha</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Matéria-prima</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">R$ 450,00</td>
+                                            </tr>
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">13/06/2023</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Pagamento de energia</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Contas</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">R$ 280,50</td>
+                                            </tr>
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12/06/2023</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Venda de bolos</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Vendas</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">R$ 520,00</td>
+                                            </tr>
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">11/06/2023</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Manutenção forno</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Manutenção</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">R$ 380,00</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <!-- Monthly Summary -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Resumo Mensal</h3>
+                                <div class="relative">
+                                    <select class="appearance-none bg-gray-100 border border-gray-300 text-gray-700 py-1 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-amber-500">
+                                        <option>Junho 2023</option>
+                                        <option>Maio 2023</option>
+                                        <option>Abril 2023</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="monthlyChart"></canvas>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 gap-4">
+                                <div class="bg-green-50 p-3 rounded-lg">
+                                    <p class="text-sm text-gray-500">Receitas</p>
+                                    <p class="font-semibold text-green-600">R$ 15.200,00</p>
+                                </div>
+                                <div class="bg-red-50 p-3 rounded-lg">
+                                    <p class="text-sm text-gray-500">Despesas</p>
+                                    <p class="font-semibold text-red-600">R$ 6.750,00</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Expense Categories -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Categorias de Despesas</h3>
+                                <button class="text-amber-700 hover:text-amber-800">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Matéria-prima</span>
+                                        <span class="text-sm font-medium text-gray-700">42%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-red-500 h-2 rounded-full" style="width: 42%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Funcionários</span>
+                                        <span class="text-sm font-medium text-gray-700">28%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-orange-500 h-2 rounded-full" style="width: 28%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Contas</span>
+                                        <span class="text-sm font-medium text-gray-700">15%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 15%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Manutenção</span>
+                                        <span class="text-sm font-medium text-gray-700">10%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-500 h-2 rounded-full" style="width: 10%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Outros</span>
+                                        <span class="text-sm font-medium text-gray-700">5%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-500 h-2 rounded-full" style="width: 5%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="transactionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md fade-in">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="modalTitle" class="text-xl font-bold"></h3>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="transactionForm">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="amount">Valor</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-700">R$</span>
+                            <input type="number" step="0.01" id="amount" class="pl-8 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="description">Descrição</label>
+                        <input type="text" id="description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="category">Categoria</label>
+                        <select id="category" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                            <!-- Categories will be populated by JS -->
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="date">Data</label>
+                        <input type="date" id="date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Cancelar</button>
+                        <button type="submit" id="submitBtn" class="px-4 py-2 rounded-md text-white"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Set today's date as default
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+            
+            // Initialize chart
+            initChart();
+        });
+
+        function openModal(type) {
+            const modal = document.getElementById('transactionModal');
+            const title = document.getElementById('modalTitle');
+            const submitBtn = document.getElementById('submitBtn');
+            const categorySelect = document.getElementById('category');
+            
+            if (type === 'income') {
+                title.textContent = 'Nova Entrada';
+                submitBtn.textContent = 'Registrar Entrada';
+                submitBtn.className = 'px-4 py-2 rounded-md text-white bg-green-600 hover:bg-green-700';
+                
+                // Populate income categories
+                categorySelect.innerHTML = `
+                    <option value="vendas">Vendas</option>
+                    <option value="encomendas">Encomendas</option>
+                    <option value="outros">Outras Receitas</option>
+                `;
+            } else {
+                title.textContent = 'Nova Despesa';
+                submitBtn.textContent = 'Registrar Despesa';
+                submitBtn.className = 'px-4 py-2 rounded-md text-white bg-red-600 hover:bg-red-700';
+                
+                // Populate expense categories
+                categorySelect.innerHTML = `
+                    <option value="materia_prima">Matéria-prima</option>
+                    <option value="funcionarios">Funcionários</option>
+                    <option value="contas">Contas</option>
+                    <option value="manutencao">Manutenção</option>
+                    <option value="outros">Outras Despesas</option>
+                `;
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('transactionModal').classList.add('hidden');
+            document.getElementById('transactionForm').reset();
+        }
+
+        // Handle form submission
+        document.getElementById('transactionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Here you would typically send the data to a server
+            // For this example, we'll just show an alert and close the modal
+            const type = document.getElementById('modalTitle').textContent.includes('Entrada') ? 'entrada' : 'despesa';
+            alert(`${type} registrada com sucesso!`);
+            
+            closeModal();
+        });
+
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('monthlyChart').getContext('2d');
+            const monthlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: [3500, 4200, 3800, 3700],
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Despesas',
+                            data: [1500, 1800, 1700, 1750],
+                            backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value;
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            align: 'end'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += 'R$ ' + context.raw;
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
